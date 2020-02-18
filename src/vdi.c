@@ -8,8 +8,8 @@ VDIFile* vdiOpen(char* filename){
     VDIFile * vdi = (VDIFile*)malloc(sizeof (VDIFile));
     vdi->header = (Header*)malloc(sizeof (Header));
     vdi->header->diskGeometry = (DiskGeometry*)malloc( sizeof(DiskGeometry));
-    vdi->superBlock = (SuperBlock*)malloc(sizeof(SuperBlock));
-    vdi->blockGroupDescriptorTable = NULL;
+    //vdi->superBlock = (SuperBlock*)malloc(sizeof(SuperBlock));
+    //vdi->blockGroupDescriptorTable = NULL;
 
     printf("Opening VDI File %s...\n",filename);
     vdi->f = fopen(filename, "rb+");
@@ -83,29 +83,24 @@ void vdiRead(VDIFile* vdi, uint8_t* buffer, size_t nbytes)
 
 void vdiClose(VDIFile* vdi)
 {
-    if(vdi->blockGroupDescriptorTable != NULL)
+    /*if(vdi->blockGroupDescriptorTable != NULL)
     {
         for (size_t i = 0; i < vdi->superBlock->numBlockGroups; i++)
         {
             free(vdi->blockGroupDescriptorTable[i]);
         }
         free(vdi->blockGroupDescriptorTable);
-    }
+    }*/
 
-    free(vdi->blockGroupDescriptorFullContents);
+    //free(vdi->blockGroupDescriptorFullContents);
     free(vdi->header->diskGeometry);
     free(vdi->header);
-    free(vdi->superBlock);
+    //free(vdi->superBlock);
     fclose(vdi->f);
     free(vdi);
 }
 
-void fetchBlock(VDIFile* vdi, uint8_t* buffer, uint32_t blockNumber)
-{
-    vdiSeek(vdi,  blockNumber*vdi->superBlock->blockSize, VDI_SET);
-    vdiRead(vdi, buffer, vdi->superBlock->blockSize);
-}
-
+/*
 void vdiWrite(VDIFile* vdi, uint8_t* buffer, size_t nbytes)
 {
     long long page = vdi->cursor/vdi->header->pageSize;
@@ -120,7 +115,7 @@ void writeBlock(VDIFile* vdi, uint8_t* buffer, uint32_t blockNumber)
 {
     vdiSeek(vdi,  blockNumber*vdi->superBlock->blockSize, VDI_SET);
     vdiWrite(vdi, buffer, vdi->superBlock->blockSize);
-}
+}*/
 
 
 

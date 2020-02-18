@@ -23,9 +23,8 @@ VDIFile* vdiOpen(char* filename);
 void vdiClose(VDIFile* vdi);
 void vdiSeek(VDIFile* vdi, long long offset, int anchor);
 void vdiRead(VDIFile* vdi, uint8_t* buffer, size_t nbytes);
-void fetchBlock(VDIFile* vdi, uint8_t* buffer, uint32_t blockNumber);
 
-void vdiWrite(VDIFile* vdi, uint8_t* buffer, size_t nbytes);
-void writeBlock(VDIFile* vdi, uint8_t* buffer, uint32_t blockNumber);
+/*void vdiWrite(VDIFile* vdi, uint8_t* buffer, size_t nbytes);
+void writeBlock(VDIFile* vdi, uint8_t* buffer, uint32_t blockNumber);*/
 
 #endif //VDIFUSE_VDI_H

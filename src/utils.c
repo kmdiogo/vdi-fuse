@@ -33,26 +33,26 @@ uint32_t power(uint32_t base, uint32_t power)
     return return_val;
 }
 
-uint32_t getNumBlockGroups(const VDIFile* vdi)
+uint32_t getNumBlockGroups(const Ext2* ext)
 {
     uint32_t numBlockGroups;
-    if(vdi->superBlock->totalBlocks%vdi->superBlock->blocksPerGroup == 0)
+    if(ext->superBlock->totalBlocks % ext->superBlock->blocksPerGroup == 0)
     {
-        numBlockGroups = vdi->superBlock->totalBlocks/vdi->superBlock->blocksPerGroup;
+        numBlockGroups = ext->superBlock->totalBlocks / ext->superBlock->blocksPerGroup;
     }
     else
     {
-        numBlockGroups =  vdi->superBlock->totalBlocks/vdi->superBlock->blocksPerGroup + 1;
+        numBlockGroups = ext->superBlock->totalBlocks / ext->superBlock->blocksPerGroup + 1;
     }
 
     int numBlockGroups2;
-    if(vdi->superBlock->totalInodes%vdi->superBlock->inodesPerGroup == 0)
+    if(ext->superBlock->totalInodes % ext->superBlock->inodesPerGroup == 0)
     {
-        numBlockGroups2 = vdi->superBlock->totalInodes/vdi->superBlock->inodesPerGroup;
+        numBlockGroups2 = ext->superBlock->totalInodes / ext->superBlock->inodesPerGroup;
     }
     else
     {
-        numBlockGroups2 =  vdi->superBlock->totalInodes/vdi->superBlock->inodesPerGroup + 1;
+        numBlockGroups2 = ext->superBlock->totalInodes / ext->superBlock->inodesPerGroup + 1;
     }
 
     if(numBlockGroups == numBlockGroups2)
@@ -62,6 +62,7 @@ uint32_t getNumBlockGroups(const VDIFile* vdi)
     else return 0;
 }
 
+/*
 uint32_t numEntriesBitmap(const uint8_t* bitmap, uint32_t numEntries)
 {
     uint32_t count = 0;
@@ -78,4 +79,4 @@ uint32_t numEntriesBitmap(const uint8_t* bitmap, uint32_t numEntries)
         }
     }
     return count;
-}
+}*/

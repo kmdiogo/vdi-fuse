@@ -13,5 +13,5 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 find_package(FUSE REQUIRED)
 include_directories(${FUSE_INCLUDE_DIR})
 
-add_executable(VDIFuse main.c include/vdi_structs.h include/vdi.h include/utils.h src/utils.c src/vdi.c include/vdif_structs.h)
+add_executable(VDIFuse main.c include/vdi_structs.h include/vdi.h include/utils.h src/utils.c src/vdi.c include/vdif_structs.h include/ext2.h src/ext2.c include/ext2_structs.h)
 target_link_libraries(VDIFuse ${FUSE_LIBRARIES})
