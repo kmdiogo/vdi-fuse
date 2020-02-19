@@ -42,8 +42,8 @@ void ext2ReadRoot(VDIFData* private_data, void *buf, fuse_fill_dir_t filler) {
 void ext2Init(VDIFData* private_data) {
     printf("EXT2: Initializing EXT2 Data Structures...\n");
     private_data->fs = malloc(sizeof(Ext2));
-    Ext2* ext = private_data->fs;
-    ext->superBlock = malloc(sizeof(SuperBlock));
+    Ext2* ext = (Ext2*)private_data->fs;
+    ext->superBlock = (SuperBlock*)malloc(sizeof(SuperBlock));
     ext->blockGroupDescriptorTable = NULL;
 
     readSuperBlock(private_data);
@@ -57,7 +57,7 @@ void ext2Init(VDIFData* private_data) {
 
 void ext2Destroy(VDIFData* private_data) {
     printf("EXT2: Destroying EXT2 Data Structures...\n");
-    Ext2* ext = private_data->fs;
+    Ext2* ext = (Ext2*)private_data->fs;
     if(ext->blockGroupDescriptorTable != NULL)
     {
         for (size_t i = 0; i < ext->superBlock->numBlockGroups; i++)
@@ -74,14 +74,14 @@ void ext2Destroy(VDIFData* private_data) {
 // Helper function that retrieves a given block by its number into a buffer
 static void fetchBlock(VDIFData* private_data, uint8_t* buffer, uint32_t blockNumber)
 {
-    Ext2* ext = private_data->fs;
+    Ext2* ext = (Ext2*)private_data->fs;
     vdiSeek(private_data->vdi, blockNumber * ext->superBlock->blockSize, VDI_SET);
     vdiRead(private_data->vdi, buffer, ext->superBlock->blockSize);
 }
 
 static void readSuperBlock(VDIFData* private_data)
 {
-    Ext2* ext = private_data->fs;
+    Ext2* ext = (Ext2*)private_data->fs;
     uint8_t superblock[SUPERBLOCK_SIZE];
     vdiSeek(private_data->vdi, 0x400, VDI_SET);
     vdiRead(private_data->vdi, superblock, SUPERBLOCK_SIZE);
@@ -126,7 +126,7 @@ static void readSuperBlock(VDIFData* private_data)
 
 static void readBlockDescTable(VDIFData* private_data)
 {
-    Ext2* ext = private_data->fs;
+    Ext2* ext = (Ext2*)private_data->fs;
 
     // Initialize block group descriptor table buffer
     uint8_t blockDescTable[ext->superBlock->blockSize];
@@ -155,7 +155,7 @@ static void readBlockDescTable(VDIFData* private_data)
 
 static Inode* fetchInode(VDIFData* private_data, uint32_t iNodeNumber)
 {
-    Ext2* ext = private_data->fs;
+    Ext2* ext = (Ext2*)private_data->fs;
     uint8_t iNodeBuffer[128];
     uint32_t iNodeSize = 128;
     uint32_t blockGroup = (iNodeNumber-1) / ext->superBlock->inodesPerGroup;
@@ -196,7 +196,7 @@ static Inode* fetchInode(VDIFData* private_data, uint32_t iNodeNumber)
 
 static void fetchBlockFromInode(VDIFData* private_data, Inode *inode, int blockNum, uint8_t *blockBuf)
 {
-    Ext2* ext = private_data->fs;
+    Ext2* ext = (Ext2*)private_data->fs;
     size_t ipb = ext->superBlock->blockSize / 4;
 
     if(blockNum < 12)
@@ -274,7 +274,7 @@ static void fetchTriple(VDIFData* private_data, Inode* inode, int blockNum, uint
 
 static Directory* openDirectory(VDIFData* private_data, uint32_t inodeNumber)
 {
-    Ext2* ext = private_data->fs;
+    Ext2* ext = (Ext2*)private_data->fs;
     Inode* inode = fetchInode(private_data, inodeNumber);
     // Inode is not directory
     if((inode->typePermissions & 0xF000u) != 0x4000u) return NULL;

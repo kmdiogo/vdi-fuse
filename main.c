@@ -45,7 +45,7 @@ static int vdif_getattr(const char *path, struct stat *stbuf) {
 
 static int vdif_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
                         off_t offset, struct fuse_file_info *fi) {
-    printf("readdir %s\n", path);
+    printf("readdir %s %d\n", path, offset);
     (void) offset;
     (void) fi;
 
@@ -132,8 +132,16 @@ static struct fuse_operations fuse_example_operations = {
         .destroy = vdif_destroy
 };
 
+static struct fuse_operations fuse_example_operations;
+
 int main(int argc, char *argv[])
 {
+    /*fuse_example_operations.getattr = vdif_getattr;
+    fuse_example_operations.open = vdif_open;
+    fuse_example_operations.read = vdif_read;
+    fuse_example_operations.readdir = vdif_readdir;
+    fuse_example_operations.init = vdif_init;
+    fuse_example_operations.destroy = vdif_destroy;*/
     // Command line argument parsing
     const int allowedFsSize = 1;
     const char* allowedFs[] = {"ext2"};
@@ -151,7 +159,7 @@ int main(int argc, char *argv[])
 
     printf("Welcome to VDI Fuse!\n");
     // Cleanup is done in vdif_destroy
-    VDIFData* vdif_data = malloc(sizeof(VDIFData));
+    VDIFData* vdif_data = (VDIFData*)malloc(sizeof(VDIFData));
     vdif_data->vdiFilePath = argv[argc-2];
     vdif_data->vdiFs = argv[argc-1];
     vdif_data->vdi = vdiOpen(vdif_data->vdiFilePath);
