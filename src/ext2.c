@@ -17,7 +17,9 @@ static void readBlockDescTable(VDIFData* private_data);
 
 void traverse(VDIFData* private_data, Directory* dir) {
     while (getNextEntry(dir)) {
-        printf("%s\n", dir->name);
+        //printf("Inode Number: %d", dir->inodeNumber);
+        //printBytes(dir->contents, 20, "Contents");
+        printf("%s\n\n\n", dir->name);
         Directory* next = openDirectory(private_data, dir->inodeNumber);
         if (next != NULL) {
             traverse(private_data, next);
@@ -49,9 +51,19 @@ void ext2Init(VDIFData* private_data) {
     readSuperBlock(private_data);
     readBlockDescTable(private_data);
 
-    /*Directory* dir = openDirectory(private_data, 2);
-    traverse(private_data, dir);
+    for (int i = 0; i < ext->superBlock->numBlockGroups; i++) {
+        printf("Block Group %d: %d\n", i, ext->blockGroupDescriptorTable[i]->numDirectories);
+    }
+
+    /*Directory* dir = openDirectory(private_data, 11);
+    getNextEntry(dir);
+    printf("Inode Number: %d %s\n", dir->inodeNumber, dir->name);
+    printBytes(dir->contents, 20, "Contents");
     closeDirectory(dir);*/
+
+    Directory* dir = openDirectory(private_data, 2);
+    traverse(private_data, dir);
+    closeDirectory(dir);
 
 }
 
@@ -320,6 +332,7 @@ static Directory* openDirectory(VDIFData* private_data, uint32_t inodeNumber)
 
 static uint32_t getNextEntry(Directory* dir)
 {
+    //printf("Inode size: %d\n", dir->inode->lower32BitsSize);
     if(dir->cursor >= dir->inode->lower32BitsSize) return 0;
     uint32_t inode = 0;
     uint32_t entrySize = 0;
